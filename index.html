@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>三目並べ</title>
+<style>
+  body { text-align: center; font-size: 40px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    gap: 5px;
+    justify-content: center;
+  }
+  button {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+  }
+</style>
+</head>
+<body>
+
+<h1>三目並べ</h1>
+<div class="grid" id="board"></div>
+<p id="status"></p>
+<button onclick="reset()">リセット</button>
+
+<script>
+let board = Array(9).fill("");
+let current = "○";
+
+const winPatterns = [
+ [0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]
+];
+
+function render() {
+  const el = document.getElementById("board");
+  el.innerHTML = "";
+  board.forEach((cell, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = cell;
+    btn.onclick = () => tap(i);
+    el.appendChild(btn);
+  });
+}
+
+function tap(i) {
+  if (board[i] !== "") return;
+
+  board[i] = current;
+
+  if (checkWin()) {
+    document.getElementById("status").textContent = current + " の勝ち！";
+    return;
+  }
+
+  current = current === "○" ? "×" : "○";
+  render();
+}
+
+function checkWin() {
+  return winPatterns.some(p =>
+    board[p[0]] &&
+    board[p[0]] === board[p[1]] &&
+    board[p[1]] === board[p[2]]
+  );
+}
+
+function reset() {
+  board = Array(9).fill("");
+  current = "○";
+  document.getElementById("status").textContent = "";
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
